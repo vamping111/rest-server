@@ -73,7 +73,7 @@ using restic backup client via the rest: URL.}
 
 
 Name:    rest-server
-Release: ROCKIT4%{buildid}%{?dist}
+Release: ROCKIT5%{buildid}%{?dist}
 Summary: Rest Server is a high performance HTTP server that implements restic's REST backend API.
 URL:     %{gourl}
 License: BSD
@@ -81,6 +81,7 @@ Source0: %{name}-%{version}.tar.gz
 
 ExcludeArch: s390x
 BuildRequires: golang >= 1.17.12
+BuildRequires: golang < 1.20
 
 %description
 %{common_description}
@@ -91,6 +92,12 @@ BuildRequires: golang >= 1.17.12
 
 
 %build
+%if 0%{?redos} == 8
+export LDFLAGS=""
+export CFLAGS=""
+export CGO_CFLAGS=""
+export CGO_LDFLAGS=""
+%endif
 export GO111MODULE=on
 export GOFLAGS=-mod=vendor
 %gobuild -o %{gobuilddir}/bin/%{name} %{goipath}/cmd/rest-server
